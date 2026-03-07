@@ -3,393 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Housing Trends - Tableau Analytics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Housing Market Trends</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         :root {
-            --navy: #0a1628;
-            --gold: #c9933a;
-            --cream: #f5f0e8;
-            --white: #ffffff;
-            --gray: #6b7280;
-            --light: #f9fafb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--cream);
-            color: var(--navy);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ── NAVBAR ── */
+        /* ── NAV ── */
         nav {
-            background: var(--navy);
-            padding: 0 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 max(2rem, 5vw);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
         }
 
         .logo {
-            font-family: 'Playfair Display', serif;
-            color: var(--gold);
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.01em;
         }
 
-        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .logo span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            list-style: none;
+        }
 
         .nav-links a {
-            color: rgba(255,255,255,0.75);
+            color: var(--muted);
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             font-weight: 500;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 4px 0;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.15s, background 0.15s;
         }
 
-        .nav-links a:hover,
+        .nav-links a:hover { color: var(--text); background: var(--surface); }
+
         .nav-links a.active {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
+            color: var(--accent);
+            background: var(--accent-light);
         }
 
-        /* ── PAGE SECTIONS ── */
-        .page { display: none; }
-        .page.active { display: block; }
-
-        /* ── HOME PAGE ── */
+        /* ── HOME ── */
         .hero {
-            height: 92vh;
-            background: linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.6) 100%),
-                        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            padding: 0 5%;
-        }
-
-        .hero-content { max-width: 800px; }
-
-        .hero-badge {
-            display: inline-block;
-            background: var(--gold);
-            color: var(--navy);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 6px 20px;
-            border-radius: 2px;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        }
-
-        .hero h1 span { color: var(--gold); }
-
-        .hero p {
-            font-size: 1.1rem;
-            opacity: 0.85;
-            margin-bottom: 2.5rem;
-            line-height: 1.7;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--gold);
-            color: var(--navy);
-            padding: 14px 36px;
-            border-radius: 3px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn:hover {
-            background: #e0a840;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(201,147,58,0.4);
-        }
-
-        .stats-bar {
-            background: var(--navy);
-            padding: 2.5rem 5%;
+            min-height: calc(100vh - 60px);
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
+            place-items: center;
+            padding: 6rem max(2rem, 5vw);
+            background: var(--bg);
         }
 
-        .stat {
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .stat-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        .stat-label {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
-
-        /* ── ABOUT PAGE ── */
-        .about-hero {
-            background: var(--navy);
-            padding: 5rem 5%;
-            text-align: center;
-            color: white;
-        }
-
-        .about-hero h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
-        }
-
-        .about-hero p {
-            max-width: 700px;
-            margin: 0 auto;
-            opacity: 0.8;
-            line-height: 1.8;
-            font-size: 1.05rem;
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            max-width: 1100px;
-            margin: 4rem auto;
-            padding: 0 5%;
-            align-items: center;
-        }
-
-        .about-image {
-            height: 400px;
-            background: url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800') center/cover;
-            border-radius: 4px 0 0 4px;
-        }
-
-        .about-text {
-            background: white;
-            padding: 3rem;
-            border-radius: 0 4px 4px 0;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .about-text h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--navy);
-            margin-bottom: 1.5rem;
-        }
-
-        .about-text ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-
-        .about-text ul li {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--gray);
-        }
-
-        .about-text ul li::before {
-            content: "✦";
-            color: var(--gold);
-            font-size: 0.7rem;
-            margin-top: 4px;
-            flex-shrink: 0;
-        }
-
-        /* ── DASHBOARD & STORY PAGES ── */
-        .page-header {
-            background: var(--navy);
-            padding: 3rem 5%;
-            text-align: center;
-            color: white;
-        }
-
-        .page-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .page-header p {
-            opacity: 0.7;
-            font-size: 0.95rem;
-        }
-
-        .tableau-container {
-            padding: 3rem 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .tableau-note {
-            background: white;
-            border-left: 4px solid var(--gold);
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            border-radius: 0 4px 4px 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
-        }
-
-        .tableau-note h4 {
-            color: var(--navy);
-            font-size: 1rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .tableau-note p {
-            color: var(--gray);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .tableau-embed {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-            min-height: 600px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Placeholder for Tableau embed */
-        .tableau-placeholder {
-            text-align: center;
-            padding: 4rem;
+        .hero-inner {
+            max-width: 680px;
             width: 100%;
         }
 
-        .tableau-placeholder .icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: var(--accent-light);
+            padding: 5px 12px;
+            border-radius: 100px;
+            margin-bottom: 2rem;
         }
 
-        .tableau-placeholder h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--navy);
+        .hero-tag::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.25rem, 5vw, 3.75rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            margin-bottom: 1.25rem;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--muted);
+            max-width: 520px;
+            line-height: 1.75;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 11px 24px;
+            border-radius: 8px;
+            transition: background 0.15s, transform 0.15s;
+        }
+
+        .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+        .btn-primary svg { width: 16px; height: 16px; }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 5rem;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            color: var(--text);
+        }
+
+        .stat-desc {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 4px;
+        }
+
+        /* ── ABOUT ── */
+        .about-page { min-height: calc(100vh - 60px); padding: 5rem max(2rem, 5vw); }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .about-header {
+            max-width: 600px;
+            margin-bottom: 4rem;
+        }
+
+        .about-header h2 {
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
             margin-bottom: 1rem;
         }
 
-        .tableau-placeholder p {
-            color: var(--gray);
-            max-width: 500px;
-            margin: 0 auto 1.5rem;
-            line-height: 1.7;
+        .about-header p {
+            font-size: 1rem;
+            color: var(--muted);
+            line-height: 1.75;
         }
 
-        .embed-code {
-            background: #1e2d3d;
-            color: #a8d8ea;
-            padding: 1.5rem 2rem;
+        .about-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+            max-width: 1100px;
+        }
+
+        .about-img {
+            aspect-ratio: 4/3;
+            background: url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800') center/cover;
+            border-radius: 12px;
+            background-color: var(--surface);
+        }
+
+        .about-points {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .about-point {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .about-point:first-child { padding-top: 0; }
+        .about-point:last-child { border-bottom: none; }
+
+        .point-num {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--accent-light);
+            color: var(--accent);
             border-radius: 6px;
-            text-align: left;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            line-height: 1.8;
-            max-width: 700px;
-            margin: 2rem auto 0;
-            overflow-x: auto;
+            display: grid;
+            place-items: center;
+            font-size: 0.75rem;
+            font-weight: 700;
         }
 
-        .embed-code .comment { color: #5c8374; }
-        .embed-code .tag { color: #e8c07d; }
-        .embed-code .attr { color: #a8d8ea; }
-        .embed-code .val { color: #95d5b2; }
+        .about-point p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.7;
+            padding-top: 4px;
+        }
+
+        /* ── DASHBOARD / STORY ── */
+        .viz-page { padding: 4rem max(2rem, 5vw); min-height: calc(100vh - 60px); }
+
+        .viz-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .viz-header-text h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+        }
+
+        .viz-header-text p {
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+        .viz-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 100px;
+        }
+
+        .viz-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .tableau-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            min-height: 640px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
 
         /* ── FOOTER ── */
         footer {
-            background: var(--navy);
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.85rem;
-            margin-top: 4rem;
+            border-top: 1px solid var(--border);
+            padding: 2rem max(2rem, 5vw);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        footer span { color: var(--gold); }
+        footer p {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        footer a {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
-            .about-grid { grid-template-columns: 1fr; }
-            .about-image { border-radius: 4px 4px 0 0; height: 250px; }
-            .about-text { border-radius: 0 0 4px 4px; padding: 2rem; }
-            .stats-bar { grid-template-columns: 1fr; }
-            .nav-links { gap: 1rem; }
-            .nav-links a { font-size: 0.75rem; letter-spacing: 1px; }
+            .about-split { grid-template-columns: 1fr; }
+            .about-img { aspect-ratio: 16/9; }
+            .stats-row { grid-template-columns: 1fr; }
+            .viz-header { flex-direction: column; align-items: flex-start; }
         }
 
-        /* Animations */
+        /* ── FADE-IN ── */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .hero-content > * {
-            animation: fadeUp 0.8s ease forwards;
-        }
-        .hero-content > *:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
-        .hero-content > *:nth-child(2) { animation-delay: 0.3s; opacity: 0; }
-        .hero-content > *:nth-child(3) { animation-delay: 0.5s; opacity: 0; }
-        .hero-content > *:nth-child(4) { animation-delay: 0.7s; opacity: 0; }
+        .hero-inner > * { animation: fadeUp 0.5s ease both; }
+        .hero-inner > *:nth-child(1) { animation-delay: 0.05s; }
+        .hero-inner > *:nth-child(2) { animation-delay: 0.15s; }
+        .hero-inner > *:nth-child(3) { animation-delay: 0.25s; }
+        .hero-inner > *:nth-child(4) { animation-delay: 0.35s; }
+        .hero-inner > *:nth-child(5) { animation-delay: 0.45s; }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- NAV -->
     <nav>
-        <div class="logo">Housing Trends</div>
+        <div class="logo">Housing<span>Trends</span></div>
         <ul class="nav-links">
             <li><a href="/" class="{{ 'active' if page == 'home' }}">Home</a></li>
             <li><a href="/about" class="{{ 'active' if page == 'about' }}">About</a></li>
@@ -398,95 +384,121 @@
         </ul>
     </nav>
 
-    <!-- ══ HOME PAGE ══ -->
+    <!-- ══ HOME ══ -->
     {% if page == 'home' %}
-    <div class="page active">
-        <div class="hero">
-            <div class="hero-content">
-                <span class="hero-badge">Tableau Analytics</span>
-                <h1>Visualizing Housing <span>Sales Trends</span> And Its Prices.</h1>
-                <p>Analyzing comprehensive housing data to uncover key insights on sale prices, renovation impact, and market dynamics using Tableau.</p>
-                <a href="/dashboard" class="btn">Get Started</a>
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-tag">Tableau Analytics</div>
+            <h1>Visualizing Housing<br><em>Sales Trends</em> &amp; Prices</h1>
+            <p>Analyzing comprehensive King County housing data to uncover key insights on sale prices, renovation impact, and market dynamics.</p>
+            <a href="/dashboard" class="btn-primary">
+                Explore Dashboard
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-num">21,609</div>
+                    <div class="stat-desc">Housing Records</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num">$511K</div>
+                    <div class="stat-desc">Avg Sale Price</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num">31</div>
+                    <div class="stat-desc">Data Features</div>
+                </div>
             </div>
         </div>
-        <div class="stats-bar">
-            <div class="stat">
-                <div class="stat-number">21,609</div>
-                <div class="stat-label">Housing Records</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">$511K</div>
-                <div class="stat-label">Avg Sale Price</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">31</div>
-                <div class="stat-label">Data Features</div>
-            </div>
-        </div>
-    </div>
+    </section>
     {% endif %}
 
-    <!-- ══ ABOUT PAGE ══ -->
+    <!-- ══ ABOUT ══ -->
     {% if page == 'about' %}
-    <div class="page active">
-        <div class="about-hero">
-            <h2>About This Project</h2>
-            <p>Visualizing Housing Market Trends: An Analysis of Sale Prices and Features using Tableau</p>
+    <section class="about-page">
+        <div class="about-header">
+            <div class="section-label">About</div>
+            <h2>Understanding Housing Market Trends</h2>
+            <p>An analysis of King County sale prices and property features — visualized with Tableau to inform strategic decisions.</p>
         </div>
-        <div class="about-grid">
-            <div class="about-image"></div>
-            <div class="about-text">
-                <h3>Project Overview</h3>
-                <ul>
-                    <li>The goal is to address challenges in understanding the factors that influence house prices and sales trends.</li>
-                    <li>By analyzing comprehensive housing data, including the total sales by years since renovation, house age distribution by the number of bathrooms, bedrooms, and floors.</li>
-                    <li>The project aims to uncover key insights using Tableau for this analysis.</li>
-                    <li>The objective is to visualize and interpret patterns in the housing market to inform strategic decisions, optimize pricing strategies, and enhance overall market competitiveness.</li>
-                </ul>
+        <div class="about-split">
+            <div class="about-img"></div>
+            <div class="about-points">
+                <div class="about-point">
+                    <div class="point-num">01</div>
+                    <p>Address challenges in understanding the factors that influence house prices and sales trends across King County, WA.</p>
+                </div>
+                <div class="about-point">
+                    <div class="point-num">02</div>
+                    <p>Analyze total sales by years since renovation, house age distribution, and the impact of bathrooms, bedrooms, and floors.</p>
+                </div>
+                <div class="about-point">
+                    <div class="point-num">03</div>
+                    <p>Uncover key patterns using Tableau through an interactive dashboard and guided story narrative.</p>
+                </div>
+                <div class="about-point">
+                    <div class="point-num">04</div>
+                    <p>Visualize and interpret housing market patterns to inform pricing strategies and enhance overall market competitiveness.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
     {% endif %}
 
-    <!-- ══ DASHBOARD PAGE ══ -->
+    <!-- ══ DASHBOARD ══ -->
     {% if page == 'dashboard' %}
-    <div class="page active">
-        <div class="page-header">
-            <h2>Comprehensive House Data Analysis</h2>
-            <p>Interactive Tableau Dashboard — Housing Market Insights</p>
-        </div>
-        <div class="tableau-container">
-            <div class="tableau-note">
-                <h4>📊 Tableau Dashboard Embed</h4>
+    <section class="viz-page">
+        <div class="viz-header">
+            <div class="viz-header-text">
+                <h2>House Data Dashboard</h2>
+                <p>Interactive Tableau dashboard — comprehensive housing market insights</p>
             </div>
-            <div class="tableau-embed">
-                <div class='tableauPlaceholder' id='viz1772528210295' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='GroupProject_17725154349810&#47;Dashboard1' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1772528210295');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.minWidth='1016px';vizElement.style.maxWidth='100%';vizElement.style.minHeight='1014px';vizElement.style.maxHeight=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.minWidth='1016px';vizElement.style.maxWidth='100%';vizElement.style.minHeight='1014px';vizElement.style.maxHeight=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.minWidth='1016px';vizElement.style.maxWidth='100%';vizElement.style.minHeight='1500px';vizElement.style.maxHeight=(divElement.offsetWidth*1.77)+'px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
-            </div>
+            <span class="viz-badge">Live Embed</span>
         </div>
-    </div>
+        <div class="tableau-wrap">
+            <div class='tableauPlaceholder' id='viz1772528210295' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /><param name='embed_code_version' value='3' /><param name='site_root' value='' /><param name='name' value='GroupProject_17725154349810&#47;Dashboard1' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Dashboard1&#47;1.png' /><param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>
+            <script type='text/javascript'>
+                var divElement = document.getElementById('viz1772528210295');
+                var vizElement = divElement.getElementsByTagName('object')[0];
+                if (divElement.offsetWidth > 800) { vizElement.style.minWidth='1016px'; vizElement.style.maxWidth='100%'; vizElement.style.minHeight='1014px'; vizElement.style.maxHeight=(divElement.offsetWidth*0.75)+'px'; }
+                else if (divElement.offsetWidth > 500) { vizElement.style.minWidth='1016px'; vizElement.style.maxWidth='100%'; vizElement.style.minHeight='1014px'; vizElement.style.maxHeight=(divElement.offsetWidth*0.75)+'px'; }
+                else { vizElement.style.minWidth='1016px'; vizElement.style.maxWidth='100%'; vizElement.style.minHeight='1500px'; vizElement.style.maxHeight=(divElement.offsetWidth*1.77)+'px'; }
+                var scriptElement = document.createElement('script');
+                scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+                vizElement.parentNode.insertBefore(scriptElement, vizElement);
+            </script>
+        </div>
+    </section>
     {% endif %}
 
-    <!-- ══ STORY PAGE ══ -->
+    <!-- ══ STORY ══ -->
     {% if page == 'story' %}
-    <div class="page active">
-        <div class="page-header">
-            <h2>Housing Market Story</h2>
-            <p>Guided narrative through key housing market insights</p>
-        </div>
-        <div class="tableau-container">
-            <div class="tableau-note">
-                <h4>📖 Tableau Story Embed</h4>
+    <section class="viz-page">
+        <div class="viz-header">
+            <div class="viz-header-text">
+                <h2>Housing Market Story</h2>
+                <p>Guided narrative through key housing market insights</p>
             </div>
-            <div class="tableau-embed">
-                <div class='tableauPlaceholder' id='viz1772528258183' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Story1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='GroupProject_17725154349810&#47;Story1' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Story1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1772528258183');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='1016px';vizElement.style.height='1014px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
-            </div>
+            <span class="viz-badge">Live Embed</span>
         </div>
-    </div>
+        <div class="tableau-wrap">
+            <div class='tableauPlaceholder' id='viz1772528258183' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Story1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /><param name='embed_code_version' value='3' /><param name='site_root' value='' /><param name='name' value='GroupProject_17725154349810&#47;Story1' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gr&#47;GroupProject_17725154349810&#47;Story1&#47;1.png' /><param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>
+            <script type='text/javascript'>
+                var divElement = document.getElementById('viz1772528258183');
+                var vizElement = divElement.getElementsByTagName('object')[0];
+                vizElement.style.width='1016px'; vizElement.style.height='1014px';
+                var scriptElement = document.createElement('script');
+                scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+                vizElement.parentNode.insertBefore(scriptElement, vizElement);
+            </script>
+        </div>
+    </section>
     {% endif %}
 
     <!-- FOOTER -->
     <footer>
-        <p>Housing Trends &copy; 2024 &nbsp;|&nbsp; Built with <span>Flask + Tableau</span> &nbsp;|&nbsp;Group Project - Data Analytics with Tableau</p>
+        <p>&copy; 2024 HousingTrends &mdash; Group Project, Data Analytics with Tableau</p>
+        <a href="https://public.tableau.com" target="_blank" rel="noopener">Built with Flask &amp; Tableau</a>
     </footer>
 
 </body>
