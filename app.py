@@ -5,29 +5,21 @@ Embeds Tableau Dashboard and Story into UI
 """
 
 import os
-from flask import Flask, render_template
+from flask import Flask, abort, render_template
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def home():
-    return render_template('index.html', page='home')
+ALLOWED_PAGES = {'home', 'about', 'dashboard', 'story'}
 
 
-@app.route('/about')
-def about():
-    return render_template('index.html', page='about')
-
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('index.html', page='dashboard')
-
-
-@app.route('/story')
-def story():
-    return render_template('index.html', page='story')
+@app.route('/', defaults={'page': 'home'})
+@app.route('/<page>')
+@app.route('/<page>/')
+def render_page(page):
+    if page not in ALLOWED_PAGES:
+        abort(404)
+    return render_template('index.html', page=page)
 
 
 if __name__ == '__main__':
